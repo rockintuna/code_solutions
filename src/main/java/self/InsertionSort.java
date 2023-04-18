@@ -13,7 +13,7 @@ public class InsertionSort {
 
             while ( target >= 0 ) {
                 if ( arr[target] > temp ) {
-                    arr[target+1] = arr[target];
+                    arr[target+1] = arr[target];렬
                 } else {
                     break;
                 }
