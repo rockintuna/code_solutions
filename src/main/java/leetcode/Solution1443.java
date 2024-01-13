@@ -36,11 +36,4 @@ public class Solution1443 {
             }
         }
     }
-
-    public static void main(String[] args) {
-        int[][] arr = new int[][]{new int[]{0,1},new int[]{0,2},new int[]{1,4},new int[]{1,5},new int[]{2,3},new int[]{2,6}};
-        List<Boolean> hasApple = List.of(false,false,true,false,true,true,false);
-        Solution1443 solution1443 = new Solution1443();
-        System.out.println(solution1443.minTime(7, arr, hasApple));
-    }
 }
