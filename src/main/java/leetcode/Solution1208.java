@@ -19,6 +19,11 @@ public class Solution1208 {
             }
         }
 
+        int size = map.size();
+        if ( arr.length < (size+1)*size/2 ) {
+            return false;
+        }
+
         int x = 0;
         List<Integer> collect = map.values().stream().sorted().collect(Collectors.toList());
         for (Integer i : collect) {
