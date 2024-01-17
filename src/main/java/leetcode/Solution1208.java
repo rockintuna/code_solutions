@@ -1,9 +1,9 @@
 package leetcode;
 
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public class Solution1208 {
 
@@ -24,13 +24,13 @@ public class Solution1208 {
             return false;
         }
 
-        int x = 0;
-        List<Integer> collect = map.values().stream().sorted().collect(Collectors.toList());
-        for (Integer i : collect) {
-            if ( x == i ) {
+        Set<Integer> countSet = new HashSet<>();
+
+        for (Integer value : map.values()) {
+            if ( countSet.contains(value) ) {
                 return false;
             } else {
-                x = i;
+                countSet.add(value);
             }
         }
         return true;
