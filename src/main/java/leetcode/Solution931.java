@@ -4,38 +4,41 @@ public class Solution931 {
 
     private int min;
     private int[][] matrix;
+    private Integer[][] minMatrix;
 
     public int minFallingPathSum(int[][] matrix) {
         this.matrix = matrix;
         this.min = 10000;
+        this.minMatrix = new Integer[matrix.length][matrix.length];
 
         if ( matrix.length == 1) {
             return matrix[0][0];
         }
 
         for (int i = 0; i < matrix.length; i++) {
-            int[] firstRow = matrix[0];
             //recursive
-            setSumOfFallingPathIfLessThanMinValue(1, i, firstRow[i]);
+            min = Math.min(min, getMinimumSumationOfFallingPathIfLessThanMinValue(0, i));
         }
 
         return this.min;
     }
 
-    private void setSumOfFallingPathIfLessThanMinValue(int floor, int upperIndex, int sum) {
-        if ( floor == matrix.length ) {
-            if ( this.min > sum ) {
-                this.min = sum;
-            }
-            return;
+    private int getMinimumSumationOfFallingPathIfLessThanMinValue(int floor, int index) {
+        if ( floor == matrix.length-1 ) {
+            return matrix[floor][index];
         }
 
-        int[] row = matrix[floor];
-        for (int i = upperIndex-1; i <= upperIndex+1; i++) {
+        int value = matrix[floor][index];
+        int minValueOfChild = 10000;
+        for (int i = index-1; i <= index+1; i++) {
             if ( i < 0 || i > matrix.length-1 ) {
                 continue;
             }
-            setSumOfFallingPathIfLessThanMinValue(floor + 1, i,sum + row[i]);
+            if ( minMatrix[floor+1][i] == null ) {
+                minMatrix[floor+1][i] = getMinimumSumationOfFallingPathIfLessThanMinValue(floor + 1, i);
+            }
+            minValueOfChild = Math.min(minValueOfChild, minMatrix[floor+1][i]);
         }
+        return value + minValueOfChild;
     }
 }
