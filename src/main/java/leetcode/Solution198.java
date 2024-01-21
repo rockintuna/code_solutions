@@ -1,29 +1,47 @@
 package leetcode;
 
-import java.util.Stack;
-
 public class Solution198 {
 
-    private int max;
     private int[] nums;
+    private Integer[] maxs;
 
     public int rob(int[] nums) {
-        this.max = 0;
-        this.nums = nums;
-        sumNext(0, 0);
-        sumNext(0, 1);
+        if ( nums.length == 1 ) {
+            return nums[0];
+        }
 
-        return max;
+        this.nums = nums;
+        this.maxs = new Integer[nums.length];
+        sumNext(0);
+        sumNext(1);
+
+        return Math.max(this.maxs[0], this.maxs[1]);
     }
 
-    private void sumNext(int sum, int index) {
+    private void sumNext(int index) {
         if ( index >= nums.length ) {
-            this.max = Math.max(this.max, sum);
+            return;
+        }
+        if ( index >= nums.length - 2 ) {
+            this.maxs[index] = this.nums[index];
+            return;
+        }
+        if ( index == nums.length - 3 ) {
+            if ( maxs[index+2] == null ) {
+                sumNext(index + 2);
+            }
+            int max = this.maxs[index + 2];
+            this.maxs[index] = max + this.nums[index];
             return;
         }
 
-        sum += this.nums[index];
-        sumNext(sum, index + 2);
-        sumNext(sum, index + 3);
+        if ( maxs[index+2] == null ) {
+            sumNext(index + 2);
+        }
+        if ( maxs[index+3] == null ) {
+            sumNext(index + 3);
+        }
+        int max = Math.max(this.maxs[index + 2], this.maxs[index + 3]);
+        this.maxs[index] = max + this.nums[index];
     }
 }
