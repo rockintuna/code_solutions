@@ -2,44 +2,24 @@ package leetcode;
 
 public class Solution1143 {
 
-    private String target;
-    private String stand;
-
     public int longestCommonSubsequence(String text1, String text2) {
-        if ( text1.length() > text2.length() ) {
-            target = text1;
-            stand = text2;
-        } else {
-            stand = text1;
-            target = text2;
-        }
-
-        StringBuilder subsequence = new StringBuilder();
-
-        int max = 0;
-        for (int i = 0; i < stand.length(); i++) {
-            max = Math.max(max, findMaxSubSequenceLength(subsequence, i, 0));
-        }
-        return max;
+        return findMaxSubSequenceLength(text1, text2, 0, 0);
     }
 
-    private int findMaxSubSequenceLength(StringBuilder builder, int standIndex, int pin) {
-        if ( standIndex == stand.length() ) {
-            return builder.length();
+    private int findMaxSubSequenceLength(String text1, String text2, int index1, int index2) {
+        if (index1 == text1.length() || index2 == text2.length()) {
+            return 0;
         }
 
-        char c = stand.charAt(standIndex);
-        int i = target.indexOf(c);
-        if ( i == -1 ) {
-            return findMaxSubSequenceLength(builder, standIndex+1, pin);
-        } else if ( i < pin ) {
-            return findMaxSubSequenceLength(builder, standIndex+1, pin);
+        int count = 0;
+        if (text1.charAt(index1) == text2.charAt(index2)) {
+            count = 1 + findMaxSubSequenceLength(text1, text2, index1+1, index2+1);
+        } else {
+            count = Math.max(findMaxSubSequenceLength(text1, text2, index1+1, index2),
+                    findMaxSubSequenceLength(text1, text2, index1, index2+1));
         }
 
-        builder.append(c);
-        int maxSubSequenceLength = findMaxSubSequenceLength(builder, standIndex + 1, pin + 1);
-        builder.deleteCharAt(builder.length()-1);
-        return maxSubSequenceLength;
+        return count;
     }
 
     public static void main(String[] args) {
