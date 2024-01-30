@@ -6,8 +6,8 @@ public class Solution232 {
 
     class MyQueue {
 
-        private Stack<Integer> saveStack;
-        private Stack<Integer> returnStack;
+        private final Stack<Integer> saveStack;
+        private final Stack<Integer> returnStack;
 
         public MyQueue() {
             saveStack = new Stack<>();
@@ -20,23 +20,21 @@ public class Solution232 {
 
         public int pop() {
             if ( returnStack.isEmpty() ) {
-                while ( !saveStack.isEmpty() ) {
-                    returnStack.push(saveStack.pop());
-                }
-                return returnStack.pop();
-            } else {
-                return returnStack.pop();
+                moveSaveStackToReturnStack();
             }
+            return returnStack.pop();
         }
 
         public int peek() {
             if ( returnStack.isEmpty() ) {
-                while ( !saveStack.isEmpty() ) {
-                    returnStack.push(saveStack.pop());
-                }
-                return returnStack.peek();
-            } else {
-                return returnStack.peek();
+                moveSaveStackToReturnStack();
+            }
+            return returnStack.peek();
+        }
+
+        private void moveSaveStackToReturnStack() {
+            while ( !saveStack.isEmpty() ) {
+                returnStack.push(saveStack.pop());
             }
         }
 
