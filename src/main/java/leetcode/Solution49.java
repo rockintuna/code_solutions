@@ -5,25 +5,21 @@ import java.util.*;
 public class Solution49 {
     public List<List<String>> groupAnagrams(String[] strs) {
         Map<String, List<String>> map = new HashMap<>();
+        for (int i = 0; i < strs.length; i++) {
+            String str = strs[i];
+            char[] charArray = str.toCharArray();
+            Arrays.sort(charArray);
+            String string = Arrays.toString(charArray);
 
-        for (String str : strs) {
-            String sortedString = sortString(str);
-
-            if (map.containsKey(sortedString)) {
-                map.get(sortedString).add(str);
+            if ( map.containsKey(string) ) {
+                map.get(string).add(str);
             } else {
-                List<String> newGroup = new ArrayList<>();
-                newGroup.add(str);
-                map.put(sortedString, newGroup);
+                List<String> objects = new ArrayList<>();
+                objects.add(str);
+                map.put(string, objects);
             }
         }
 
         return new ArrayList<>(map.values());
-    }
-
-    private static String sortString(String str) {
-        char[] charArray = str.toCharArray();
-        Arrays.sort(charArray);
-        return Arrays.toString(charArray);
     }
 }
