@@ -10,49 +10,52 @@ public class Solution368 {
 
         int size = 0;
 
-        List<Set<Integer>> dp = new ArrayList<>();
-        Set<Integer> result = null;
+        List<List<Integer>> dp = new ArrayList<>();
+        List<Integer> result = null;
 
         Arrays.sort(nums);
 
         for (int i = 0; i < nums.length; i++) {
-            List<Set<Integer>> copyOfDp = new ArrayList<>(dp);
+            List<List<Integer>> copyOfDp = new ArrayList<>(dp);
+            List<Integer> list = null;
+            int maxSize = 0;
             for (int j = 0; j < dp.size(); j++) {
-                Set<Integer> integers = dp.get(j);
+                List<Integer> integers = dp.get(j);
                 if ( isDivisible(integers, nums[i]) ) {
-                    Set<Integer> newSet = new HashSet<>(integers);
-                    newSet.add(nums[i]);
-                    copyOfDp.add(newSet);
+                    if ( integers.size() > maxSize ) {
+                        maxSize = integers.size();
+                        list = integers;
+                    }
                 }
             }
-            copyOfDp.add(Set.of(nums[i]));
+
+            if ( list != null ) {
+                List<Integer> newList = new ArrayList<>(list);
+                newList.add(nums[i]);
+                copyOfDp.add(newList);
+            } else {
+                copyOfDp.add(List.of(nums[i]));
+            }
             dp = copyOfDp;
         }
 
-        for (Set<Integer> integers : dp) {
+        for (List<Integer> integers : dp) {
             if ( integers.size() > size ) {
                 size = integers.size();
                 result = integers;
             }
         }
-        return new ArrayList<>(result);
+        return result;
     }
 
-    private boolean isDivisible(Set<Integer> set, int num) {
-        boolean isDivisible = true;
-        for (Integer integer : set) {
-            if ( num % integer != 0 ) {
-                isDivisible = false;
-                break;
-            }
-        }
-        return isDivisible;
+    private boolean isDivisible(List<Integer> list, int num) {
+        return num % list.get(list.size() - 1) == 0;
     }
 
     public static void main(String[] args) {
         Solution368 solution368 = new Solution368();
-//        int[] nums = {5,9,18,54,108,540,90,180,360,720};
-        int[] nums = {1,2,4,8};
+        int[] nums = {5,9,18,54,108,540,90,180,360,720};
+//        int[] nums = {1,2,4,8};
         List<Integer> result = solution368.largestDivisibleSubset(nums);
         System.out.println(result);
     }
