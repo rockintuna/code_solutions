@@ -2,11 +2,14 @@ package leetcode;
 
 public class Solution231 {
     public boolean isPowerOfTwo(int n) {
-        for (int i = 0; i < 31; i++) {
-            if ( Math.pow(2, i) == n ) {
-                return true;
-            }
+        if ( n <= 0 ) {
+            return false;
         }
-        return false;
+        return (n & n - 1) == 0;
+    }
+
+    public static void main(String[] args) {
+        Solution231 solution231 = new Solution231();
+        System.out.println(solution231.isPowerOfTwo(-16));
     }
 }
