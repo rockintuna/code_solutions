@@ -3,16 +3,31 @@ package leetcode;
 public class Solution543 {
 
     public int diameterOfBinaryTree(TreeNode root) {
-        getMaxPathLeng(root);
+        int countOfNodes = countNode(root);
+
+        int[] a = new int[30];
+        a[0] = 1;
+        a[1] = 2;
+        a[2] = 3;
+        for (int i = 3; i < 30; i++) {
+            a[i] = a[i-2] * 2;
+        }
+        for (int i = 0; i < a.length; i++) {
+            if ( a[i] > countOfNodes ) {
+                return a[i]-1;
+            }
+        }
+        return a[30];
     }
 
-    private void getMaxPathLeng(TreeNode root) {
-        TreeNode left = root.left;
-        TreeNode right = root.right;
+    private int countNode(TreeNode root) {
+        if ( root == null ) {
+            return 0;
+        }
 
-        int leftLength = 1;
-        int rightLength = 1;
+        int i = 1;
 
+        return i + countNode(root.left) + countNode(root.right);
     }
 
     class TreeNode {
