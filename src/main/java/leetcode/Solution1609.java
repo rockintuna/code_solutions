@@ -2,49 +2,58 @@ package leetcode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Solution1609 {
 
     public boolean isEvenOddTree(TreeNode root) {
-        List<TreeNode> list = new ArrayList<>();
-        list.add(root);
+        Stack<TreeNode> stack = new Stack<>();
+        stack.add(root);
         boolean evenIndexedLevel = true;
-        while ( !list.isEmpty() ) {
-            List<TreeNode> newList = new ArrayList<>();
-            int value = 0;
-            for (int i = 0; i < list.size(); i++) {
-                TreeNode treeNode = list.get(i);
-                if ( i == 0 ) {
-                    if ( evenIndexedLevel ) {
-                        if ( isEven(treeNode.val) ) {
-                            return false;
-                        }
-                    } else {
-                        if ( !isEven(treeNode.val) ) {
-                            return false;
-                        }
+        while ( !stack.isEmpty() ) {
+            List<TreeNode> list = new ArrayList<>();
+            while ( !stack.isEmpty() ) {
+                TreeNode treeNode = stack.pop();
+                if ( evenIndexedLevel && !isEven(treeNode.val) ) {
+                    list.add(treeNode);
+                } else if ( !evenIndexedLevel && isEven(treeNode.val) ) {
+                    list.add(treeNode);
+                } else {
+                    return false;
+                }
+            }
+
+            if ( !inIncreasingOrder(list, stack, evenIndexedLevel) ) {
+                return false;
+            }
+            evenIndexedLevel = !evenIndexedLevel;
+        }
+        return true;
+    }
+
+    private boolean inIncreasingOrder(List<TreeNode> list, Stack<TreeNode> stack, boolean evenIndexedLevel) {
+        int value = 0;
+        for (TreeNode treeNode : list) {
+            if (value < treeNode.val) {
+                if (evenIndexedLevel) {
+                    if (treeNode.left != null) {
+                        stack.push(treeNode.left);
+                    }
+                    if (treeNode.right != null) {
+                        stack.push(treeNode.right);
                     }
                 } else {
-                    if ( evenIndexedLevel ) {
-                        if ( isEven(treeNode.val) || value >= treeNode.val  ) {
-                            return false;
-                        }
-                    } else {
-                        if ( !isEven(treeNode.val) || value <= treeNode.val ) {
-                            return false;
-                        }
+                    if (treeNode.right != null) {
+                        stack.push(treeNode.right);
+                    }
+                    if (treeNode.left != null) {
+                        stack.push(treeNode.left);
                     }
                 }
                 value = treeNode.val;
-                if ( treeNode.left != null ) {
-                    newList.add(treeNode.left);
-                }
-                if ( treeNode.right != null ) {
-                    newList.add(treeNode.right);
-                }
+            } else {
+                return false;
             }
-            list = newList;
-            evenIndexedLevel = !evenIndexedLevel;
         }
         return true;
     }
