@@ -11,12 +11,8 @@ public class Solution2864 {
         }
 
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < countOfOne - 1; i++) {
-             result.append('1');
-        }
-        for (int i = 0; i < s.length()-countOfOne; i++) {
-            result.append('0');
-        }
+        result.append("1".repeat(Math.max(0, countOfOne - 1)));
+        result.append("0".repeat(Math.max(0, s.length() - countOfOne)));
         result.append('1');
         return result.toString();
     }
