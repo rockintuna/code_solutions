@@ -4,96 +4,62 @@ import java.util.*;
 
 public class Solution787 {
 
-    private List<List<Node>> graph = new ArrayList<>();
-
-    private Integer[] priceArray;
-
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
-        for (int i = 0; i < n; i++) {
-            graph.add(new ArrayList<>());
+        List<int[]>[] graph = new LinkedList[n];
+        for(int i = 0; i < n; i++){
+            graph[i] = new LinkedList<>();
         }
-
-        for (int i = 0; i < flights.length; i++) {
-            int start = flights[i][0];
-            int end = flights[i][1];
-            int price = flights[i][2];
-            graph.get(start).add(new Node(end, price));
+        for(int[] flight: flights){
+            int from = flight[0];
+            int to = flight[1];
+            int price = flight[2];
+            graph[from].add(new int[]{to, price});
         }
-
-        priceArray = new Integer[n];
-        Arrays.fill(priceArray, flights.length * 10000);
-
-        dijkstra(src, k);
-
-        return priceArray[dst];
+        k++;
+        return dijkstra(graph, src, dst, k);
     }
-
-    private void dijkstra(int src, int k) {
-        Queue<Node> priorityQueue = new PriorityQueue<>();
-        priorityQueue.add(new Node(src, 0));
-
-        while (!priorityQueue.isEmpty()) {
-            Node node = priorityQueue.poll();
-
-            int num = node.getNum();
-            int price = node.getPrice();
-
-            if ( priceArray[num] < price ) {
-                continue;
-            }
-
-            for (int i = 0; i < graph.get(num).size(); i++) {
-
-                int cost = priceArray[num] + graph.get(num).get(i).getPrice();
-
-                if (cost < priceArray[graph.get(num).get(i).getNum()]) {
-                    priceArray[graph.get(num).get(i).getNum()] = cost;
-                    priorityQueue.offer(new Node(graph.get(num).get(i).getNum(), cost));
+    class State{
+        int id;
+        int costFromSrc;
+        int nodeNumFromSrc;
+        public State(int id, int costFromSrc, int nodeNumFromSrc){
+            this.id = id;
+            this.costFromSrc = costFromSrc;
+            this.nodeNumFromSrc = nodeNumFromSrc;
+        }
+    }
+    public int dijkstra(List<int[]>[] graph, int src, int dst, int k){
+        int[] costTo = new int[graph.length];
+        int[] nodeNumTo = new int[graph.length];
+        Arrays.fill(costTo, Integer.MAX_VALUE);
+        Arrays.fill(nodeNumTo, Integer.MAX_VALUE);
+        costTo[src] = 0;
+        nodeNumTo[src] = 0;
+        PriorityQueue<State> pq = new PriorityQueue<>((a, b) -> {
+            return a.costFromSrc - b.costFromSrc;
+        });
+        pq.offer(new State(src, 0, 0));
+        while(!pq.isEmpty()){
+            State curState = pq.poll();
+            int curId = curState.id;
+            int curCostFromSrc = curState.costFromSrc;
+            int curNodeNumFromSrc = curState.nodeNumFromSrc;
+            if(curId == dst) return curCostFromSrc;
+            if(curNodeNumFromSrc == k) continue;
+            for(int[] neighbors: graph[curId]){
+                int nextId = neighbors[0];
+                int nextPrice = curCostFromSrc + neighbors[1];
+                int nextNodeNumFromSrc = curNodeNumFromSrc + 1;
+                if(costTo[nextId] > nextPrice || nodeNumTo[nextId] > nextNodeNumFromSrc){
+                    pq.offer(new State(nextId, nextPrice, nextNodeNumFromSrc));
+                }
+                if(costTo[nextId] > nextPrice){
+                    costTo[nextId] = nextPrice;
+                    nodeNumTo[nextId] = nextNodeNumFromSrc;
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        Solution787 solution787 = new Solution787();
-        int[][] values = new int[][]{new int[]{1,2,10},
-                new int[]{2,0,7},
-                new int[]{1,3,8},
-                new int[]{4,0,10},
-                new int[]{3,4,2},
-                new int[]{4,2,10},
-                new int[]{0,3,3},
-                new int[]{3,1,6},
-                new int[]{2,4,5}};
-        System.out.println(solution787.findCheapestPrice(5, values, 0,4,1));
-    }
-
-    class Node implements Comparable<Node> {
-
-        private int num;
-        private int price;
-
-        public int getNum() {
-            return num;
-        }
-
-        public int getPrice() {
-            return price;
-        }
-
-        public Node(int num, int price) {
-            this.num = num;
-            this.price = price;
-        }
-
-        @Override
-        public int compareTo(Node o) {
-            if ( this.price > o.getPrice() ) {
-                return 1;
-            } else {
-                return -1;
-            }
-        }
+        return -1;
     }
 }
 
